@@ -4,6 +4,8 @@ import os
 
 import re
 
+import codecs
+
 corpus = pc.hkcancor()#load HkCancor Corpus
 
 freq = corpus.word_frequency()
@@ -16,11 +18,11 @@ def save(file_path, init_words_path, tagged_words):
 
         os.makedirs(directory)
 
-    with open(init_words_path, 'r') as t:
+    with codecs.open(init_words_path, 'r', 'utf8') as t:
 
         lines = t.readlines()
 
-        with open(file_path, 'w', encoding='utf8') as f:
+        with codecs.open(file_path, 'w', 'utf8') as f:
 
             for word in tagged_words:
 
@@ -46,4 +48,4 @@ def save(file_path, init_words_path, tagged_words):
 
                 f.write(line)
 
-save('data/dict.txt', 'data/init_dict.txt', corpus.tagged_words())
+save('data/cantondict2.txt', 'data/init_dict.txt', corpus.tagged_words())
