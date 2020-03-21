@@ -17,7 +17,6 @@ def save_file(file_path,content):
     directory = os.path.dirname(file_path)
     if not os.path.exists(directory):
         os.makedirs(directory)
-
     with codecs.open(file_path,'w','utf-8') as file:
         for line in content:
             file.write(line + '\n')
@@ -26,7 +25,7 @@ def save_file(file_path,content):
 def clean(line):
     decimal_alpha_cut = re.compile(r"[A-Za-z0-9]|/d+")
     zh_punct_cut = re.compile(r"[%s]+"%punctuation)
-    en_punct_cut = re.compile(r"[.!//_,$&%^*()<>+\"'?@#-|:~{}]+|[．]+")
+    en_punct_cut = re.compile(r"[.!//_,$&%^*()<>+\"'?@#-|:~{}]+|[．─⋯]+")
     space_cut = re.compile(r"\s+")
     line = decimal_alpha_cut.sub(r"", line)
     line = zh_punct_cut.sub(r"",line)
@@ -44,7 +43,7 @@ def filter_stopwords(line,stopword_list):
             line_filtered.append(word)
     return line_filtered
 
-corpus_path = "splitted/"
+corpus_path = "splitted2/"
 output_path = "segmented/"
 stopword_path = "data/stopwordCT.txt"
 
@@ -58,27 +57,32 @@ def segment():
     for file_name in file_list:
         full_file_path = corpus_path+file_name
         file_name = re.sub(r'.txt',r'',file_name)
-
-        output_file_path = output_path+file_name+'_segmented_full.txt'
+        output_file_path = output_path+file_name+'_segmented.txt'
         corpus = read_file(full_file_path)
         new_corpus = []
         for line in corpus:
             line = clean(line)
             #print(line)
+            if line == '':
+                continue
             line = list(jieba.cut(line,HMM=True))
-            #line = filter_stopwords(line,stopword_list)
+            line = filter_stopwords(line,stopword_list)
+            if len(line) == 0 :
+                continue
             line = ' '.join(line)
+            line = line.rstrip('\r\n').strip()
             new_corpus.append(line)
             #print(line)
         save_file(output_file_path,new_corpus)
 
 def mergefiles(filename):
     file_list = os.listdir(output_path)
-    merged_file_path = output_path + 'merged/'
+    print(file_list)
+    merged_file_path = 'merged/'
     merged_file_name = merged_file_path + filename
     if not os.path.exists(merged_file_path):
         os.mkdir(merged_file_path)
-    with codecs.open(merged_file_path, 'w', 'utf-8') as mergedfile:
+    with codecs.open(merged_file_name, 'w', 'utf-8') as mergedfile:
         for file_name in file_list:
             full_file_path = output_path + file_name
             with codecs.open(full_file_path, 'r', 'utf-8') as currentfile:
@@ -89,3 +93,4 @@ def mergefiles(filename):
 #clean(" 这句话里有英语a和字母1需要被去除，还有中文 标点 符号。。。（））‘’“”【】……,还有英语标点符号(){}[]......\'\"!?/\\\「大作一號」english英语数字1234去除了吗？ ")
 #filter_stopwords('','data/stopwordCT.txt')
 segment()
+#mergefiles('mergedtext.txt')
