@@ -56,7 +56,7 @@ def predict_center_word(context, topn=5):
 
 
 
-similar_words("細路")
+similar_words("太陽")
 #similar_words("貓")
 #similar_words("你嘅")
 
