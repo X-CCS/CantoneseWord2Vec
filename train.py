@@ -1,6 +1,6 @@
 from gensim.models import word2vec
 
-file_path = "text/training.txt"
+file_path = "segmented/Nostopwords/littleprincesplitted_segmented.txt"
 
 sentences = word2vec.LineSentence(file_path)
 
