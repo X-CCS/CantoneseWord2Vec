@@ -23,8 +23,5 @@ print("Default Mode: " + "/ ".join(seg_list))  # 精确模式
 # print("\n" + "="*40)
 
 
-#print("***案例1***"*3)
-#txt='那些你很冒险的梦，我陪你去疯，折纸飞机碰到雨天终究会坠落，伤人的话我直说，因为你会懂，冒险不冒险你不清楚，折纸飞机也不会回来，做梦的人睡不醒！'
-#Key=jieba.analyse.extract_tags(txt,topK=3)
-#print(Key)
+
 
