@@ -43,8 +43,9 @@ def filter_stopwords(line,stopword_list):
             line_filtered.append(word)
     return line_filtered
 
-corpus_path = "splitted/"
+corpus_path = "splitted2/"
 output_path = "segmented/"
+#output_path = "merged2/"
 stopword_path = "data/stopwordCT.txt"
 
 def segment():
@@ -57,7 +58,7 @@ def segment():
     for file_name in file_list:
         full_file_path = corpus_path+file_name
         file_name = re.sub(r'.txt',r'',file_name)
-        output_file_path = output_path+file_name+'_segmented.txt'
+        output_file_path = output_path+file_name+'_segmented_full.txt'
         corpus = read_file(full_file_path)
         new_corpus = []
         for line in corpus:
@@ -66,7 +67,7 @@ def segment():
             if line == '':
                 continue
             line = list(jieba.cut(line,HMM=True))
-            line = filter_stopwords(line,stopword_list)
+            #line = filter_stopwords(line,stopword_list)
             if len(line) == 0 :
                 continue
             line = ' '.join(line)
@@ -92,5 +93,5 @@ def mergefiles(filename):
         mergedfile.close()
 #clean(" 这句话里有英语a和字母1需要被去除，还有中文 标点 符号。。。（））‘’“”【】……,还有英语标点符号(){}[]......\'\"!?/\\\「大作一號」english英语数字1234去除了吗？ ")
 #filter_stopwords('','data/stopwordCT.txt')
-segment()
-mergefiles('mergedtext.txt')
+#segment()
+mergefiles('mergedtext3.txt')
