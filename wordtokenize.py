@@ -44,8 +44,8 @@ def filter_stopwords(line,stopword_list):
     return line_filtered
 
 corpus_path = "splitted2/"
-output_path = "segmented/"
-#output_path = "merged2/"
+#output_path = "segmented3/"
+output_path = "merged2/"
 stopword_path = "data/stopwordCT.txt"
 
 def segment():
@@ -94,4 +94,4 @@ def mergefiles(filename):
 #clean(" 这句话里有英语a和字母1需要被去除，还有中文 标点 符号。。。（））‘’“”【】……,还有英语标点符号(){}[]......\'\"!?/\\\「大作一號」english英语数字1234去除了吗？ ")
 #filter_stopwords('','data/stopwordCT.txt')
 #segment()
-mergefiles('mergedtext3.txt')
+mergefiles('mergedtext_full_wiki_fictions.txt')
