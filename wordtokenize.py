@@ -22,15 +22,25 @@ def save_file(file_path,content):
             file.write(line + '\n')
         file.close()
 
+
 def clean(line):
-    decimal_alpha_cut = re.compile(r"[A-Za-z0-9]|/d+")
+    zh_chars = re.findall('[\n\s*\r\u4e00-\u9fa5]', line)
+    line = "".join(zh_chars)
+    #decimal_alpha_cut = re.compile(r"[A-Za-z0-9]|/d+")
     zh_punct_cut = re.compile(r"[%s]+"%punctuation)
     en_punct_cut = re.compile(r"[.!//_,$&%^*()<>+\"'?@#-|:~{}]+|[．─⋯]+")
     space_cut = re.compile(r"\s+")
-    line = decimal_alpha_cut.sub(r"", line)
+    #line = decimal_alpha_cut.sub(r"", line)
     line = zh_punct_cut.sub(r"",line)
     line = en_punct_cut.sub(r"",line)
     line = space_cut.sub(r"",line)
+    #print(line)
+    return line
+
+def clean2(line):
+    zh_chars = re.findall('[\n\s*\r\u4e00-\u9fa5]', line)
+    line = "".join(zh_chars)
+    line = line.strip()
     #print(line)
     return line
 
@@ -44,7 +54,9 @@ def filter_stopwords(line,stopword_list):
     return line_filtered
 
 corpus_path = "splitted/"
-output_path = "segmented/"
+#corpus_path = "WikiCorpus/"
+output_path = "segmentednew/"
+#output_path = "merged2/"
 stopword_path = "data/stopwordCT.txt"
 
 def segment():
@@ -57,7 +69,7 @@ def segment():
     for file_name in file_list:
         full_file_path = corpus_path+file_name
         file_name = re.sub(r'.txt',r'',file_name)
-        output_file_path = output_path+file_name+'_segmented.txt'
+        output_file_path = output_path+file_name+'_segmented_full.txt'
         corpus = read_file(full_file_path)
         new_corpus = []
         for line in corpus:
@@ -66,7 +78,7 @@ def segment():
             if line == '':
                 continue
             line = list(jieba.cut(line,HMM=True))
-            line = filter_stopwords(line,stopword_list)
+            #line = filter_stopwords(line,stopword_list)
             if len(line) == 0 :
                 continue
             line = ' '.join(line)
@@ -92,5 +104,5 @@ def mergefiles(filename):
         mergedfile.close()
 #clean(" 这句话里有英语a和字母1需要被去除，还有中文 标点 符号。。。（））‘’“”【】……,还有英语标点符号(){}[]......\'\"!?/\\\「大作一號」english英语数字1234去除了吗？ ")
 #filter_stopwords('','data/stopwordCT.txt')
-segment()
-mergefiles('mergedtext.txt')
+#segment()
+mergefiles('mergedtext_full_wiki_fictions_new.txt')
