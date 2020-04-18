@@ -56,9 +56,9 @@ def predict_center_word(context, topn=5):
 
 
 
-similar_words("太陽")
-#similar_words("貓")
-#similar_words("你嘅")
+similar_words("太陽",3)
+similar_words("貓", 3)
+similar_words("屌", 3)
 
 #similarity("紅", "綠")
 #similarity("你", "我")
@@ -66,7 +66,7 @@ similar_words("太陽")
 #predict_center_word(["我", "蘋果"])
 #predict_center_word(["飛機", "引擎"])
 
-draw(model_hs_5)
+#draw(model_hs_5)
 #draw(model_hs_10)
 #draw(model_ns_5)
-#draw(model_ns_10)
+draw(model_ns_10)
