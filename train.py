@@ -1,14 +1,20 @@
 from gensim.models import word2vec
 
-file_path = "segmented"
+#file_path = "segmented"
+#
+#sentences = word2vec.PathLineSentences(file_path)
 
-sentences = word2vec.PathLineSentences(file_path)
+file_path = "merged/mergedtext_full_wiki_fictions_new.txt"
+#file_path = "merged/mergedtext_full_oneline_wiki_fiction.txt"
+
+sentences = word2vec.LineSentence(file_path)
+
 
 # Set embedding dimension
 emb_dim = 100
 
 # Set number of negative samples
-num_ns = 5
+num_ns = 10
 
 # Set number of epochs
 num_epoch = 15
