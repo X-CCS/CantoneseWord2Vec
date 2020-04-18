@@ -22,15 +22,25 @@ def save_file(file_path,content):
             file.write(line + '\n')
         file.close()
 
+
 def clean(line):
-    decimal_alpha_cut = re.compile(r"[A-Za-z0-9]|/d+")
+    zh_chars = re.findall('[\n\s*\r\u4e00-\u9fa5]', line)
+    line = "".join(zh_chars)
+    #decimal_alpha_cut = re.compile(r"[A-Za-z0-9]|/d+")
     zh_punct_cut = re.compile(r"[%s]+"%punctuation)
     en_punct_cut = re.compile(r"[.!//_,$&%^*()<>+\"'?@#-|:~{}]+|[．─⋯]+")
     space_cut = re.compile(r"\s+")
-    line = decimal_alpha_cut.sub(r"", line)
+    #line = decimal_alpha_cut.sub(r"", line)
     line = zh_punct_cut.sub(r"",line)
     line = en_punct_cut.sub(r"",line)
     line = space_cut.sub(r"",line)
+    #print(line)
+    return line
+
+def clean2(line):
+    zh_chars = re.findall('[\n\s*\r\u4e00-\u9fa5]', line)
+    line = "".join(zh_chars)
+    line = line.strip()
     #print(line)
     return line
 
@@ -43,9 +53,10 @@ def filter_stopwords(line,stopword_list):
             line_filtered.append(word)
     return line_filtered
 
-corpus_path = "splitted2/"
-#output_path = "segmented3/"
-output_path = "merged2/"
+corpus_path = "splitted/"
+#corpus_path = "WikiCorpus/"
+output_path = "segmentednew/"
+#output_path = "merged2/"
 stopword_path = "data/stopwordCT.txt"
 
 def segment():
@@ -94,4 +105,4 @@ def mergefiles(filename):
 #clean(" 这句话里有英语a和字母1需要被去除，还有中文 标点 符号。。。（））‘’“”【】……,还有英语标点符号(){}[]......\'\"!?/\\\「大作一號」english英语数字1234去除了吗？ ")
 #filter_stopwords('','data/stopwordCT.txt')
 #segment()
-mergefiles('mergedtext_full_wiki_fictions.txt')
+mergefiles('mergedtext_full_wiki_fictions_new.txt')
