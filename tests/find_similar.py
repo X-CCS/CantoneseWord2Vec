@@ -9,6 +9,7 @@ def find_similar_words(model, target, topn=5):
 
 def find_similarity(model, word1, word2):
     print(model.wv.similarity(word1, word2))
+    print(model.wv.distance(word1,word2))
     print('-----------------------------------------------------')
 
 
