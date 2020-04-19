@@ -1,4 +1,5 @@
 from gensim.models import word2vec
+from gensim.models import keyedvectors
 
 #file_path = "segmented"
 #
@@ -8,7 +9,6 @@ file_path = "merged/mergedtext_full_wiki_fictions_new.txt"
 #file_path = "merged/mergedtext_full_oneline_wiki_fiction.txt"
 
 sentences = word2vec.LineSentence(file_path)
-
 
 # Set embedding dimension
 emb_dim = 100

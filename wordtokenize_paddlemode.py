@@ -45,7 +45,7 @@ def filter_stopwords(line,stopword_list):
 
 corpus_path = "splitted3/"
 #corpus_path = "WikiCorpus"
-output_path = "segmented3/"
+output_path = "segmented_oneline/"
 #output_path = "merged2/"
 stopword_path = "data/stopwordCT.txt"
 
