@@ -3,7 +3,7 @@ from gensim.models import keyedvectors
 import time
 import os
 
-def train_fasttext(sentences, embedding_size=100, window=5, sg=1, hs=0, min_ct=2,min_n = 1, max_n = 4,
+def train_fasttext(sentences, embedding_size=100, window=5, sg=1, hs=0, min_ct=2,min_n = 2, max_n = 4,
                    ns_exponent=0.75, negative=15, epoch=50, sample=1e-5):
     ftmodel = FastText(size=embedding_size, window=window, sg=sg, hs=hs, negative=negative, sample=sample,
                        ns_exponent=ns_exponent,min_n=min_n, max_n = max_n, min_count=min_ct, workers=8, seed=7)
@@ -12,11 +12,8 @@ def train_fasttext(sentences, embedding_size=100, window=5, sg=1, hs=0, min_ct=2
     return ftmodel
 
 
-def save_fasttext(ftmodel,model_path):
+def save_fasttext(ftmodel,model_path,vector_path):
     ftmodel.save(model_path)
-
-
-def save_fasttext_wv(ftmodel,vector_path):
     ftmodel.wv.save(vector_path)
 
 
@@ -32,14 +29,14 @@ def load_fasttextVectors(vector_path):
 
 if __name__=='__main__':
 
-    #file_path = "./segmentednew"
+    file_path = "./segmentednew"
     #file_path = "./segmented_oneline"
 
-    #sentences = word2vec.PathLineSentences(file_path)
+    sentences = word2vec.PathLineSentences(file_path)
 
-    file_path = "merged/mergedtext_full_wiki_fictions_new.txt"
+    #file_path = "merged/mergedtext_full_wiki_fictions_new.txt"
     # file_path = "merged/mergedtext_full_oneline_wiki_fiction.txt"
-    sentences = word2vec.LineSentence(file_path)
+    #sentences = Word2vec.LineSentence(file_path)
 
     # Set embedding dimension
     emb_dim = 100
@@ -52,15 +49,14 @@ if __name__=='__main__':
 
     # Set number of epochs
     #num_epoch = 20
-    #num_epoch = 50
-    #num_epoch = 80
-    num_epoch = 110
+    num_epoch = 50
+    num_epoch = 80
 
     # Set subsampling rate on frequent words
     subsample = 0.75
     #subsample = -0.5
 
-    path_prefix = "F:/fasttextoutput/110epochs/0.75/"
+    path_prefix = "F:/fasttextoutput/80epochs/0.75/"
     if not os.path.exists(path_prefix):
         os.makedirs(path_prefix)
 
@@ -68,11 +64,11 @@ if __name__=='__main__':
     print("Training model_hs_5...")
     start_time = time.time()
     model_hs_5 = train_fasttext(sentences, embedding_size=emb_dim, window=5, sg=1, hs=1, min_ct=min_count,
-                                epoch=num_epoch)
+                                epoch=num_epoch, ns_exponent=subsample)
     training_time = time.time() - start_time
     print("%d seconds used to train this model" %(training_time))
-    save_fasttext(model_hs_5, path_prefix+"model_hs_5.model")
-    print("number of words in vocab: %d" % (len(model_hs_5.wv.vocab)))
+    save_fasttext(model_hs_5, path_prefix+"model_hs_5.model", path_prefix+"vector_hs_5.kv")
+    #print("model_hs_3 has last training loss:%f" % model_hs_3.get_latest_training_loss())
     print("model_hs_5.model saved.")
 
 
@@ -80,10 +76,12 @@ if __name__=='__main__':
     print("Training skip gram model_hs_7...")
     start_time = time.time()
     model_hs_7 = train_fasttext(sentences, embedding_size=emb_dim, window=7, sg=1, hs=1, min_ct=min_count,
-                                epoch=num_epoch)
+                                epoch=num_epoch, ns_exponent=subsample)
     training_time = time.time() - start_time
     print("%d seconds used to train this model" %(training_time))
-    save_fasttext(model_hs_7, path_prefix+"model_hs_7.model")
+    save_fasttext(model_hs_7, path_prefix+"model_hs_7.model", path_prefix+"vector_hs_7.kv")
+    print("number of words in vocab: %d" % (len(model_hs_7.wv.vocab)))
+    #print("model_hs_7 has last training loss:%f" % model_hs_7.get_latest_training_loss())
     print("model_hs_7.model saved.")
 
     # negative sampling with window range of 5
@@ -93,7 +91,8 @@ if __name__=='__main__':
                                 negative=num_ns, epoch=num_epoch, ns_exponent=subsample)
     training_time = time.time() - start_time
     print("%d seconds used to train this model" %(training_time))
-    save_fasttext(model_ns_5, path_prefix+"model_ns_5.model")
+    save_fasttext(model_ns_5, path_prefix+"model_ns_5.model", path_prefix+"vector_ns_5.kv")
+    #print("model_ns_3 has last training loss:%f" % model_ns_3.get_latest_training_loss())
     print("model_ns_5.model saved.")
 
     # negative sampling with window range of 7
@@ -103,5 +102,7 @@ if __name__=='__main__':
                                 negative=num_ns, epoch=num_epoch, ns_exponent=subsample)
     training_time = time.time() - start_time
     print("%d seconds used to train this model" %(training_time))
-    save_fasttext(model_ns_7, path_prefix+"model_ns_7.model")
+    save_fasttext(model_ns_7, path_prefix+"model_ns_7.model", path_prefix+"vector_ns_7.kv")
+    #print("model_ns_7 has last training loss:%f" % model_ns_7.get_latest_training_loss())
     print("model_ns_7.model saved.")
+
