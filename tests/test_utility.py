@@ -1,12 +1,24 @@
 from find_similar import *
 from predict import *
-
+import numpy as np
 
 def similar_words(zipped_model_list, word, topn=5):
     print('Words most similar to: "' + word + '"')
     for model_name, model in zipped_model_list:
         print(model_name)
         find_similar_words(model,word,topn)
+    print("***************************************************")
+
+
+def similar_vectors(zipped_model_list, wordgroups, topn=5):
+    print('Words most similar to: "' + wordgroups + '"')
+    wordgroups = list(wordgroups.split())
+    for model_name, model in zipped_model_list:
+        print(model_name)
+        vector = 0
+        for word in wordgroups:
+            vector += model.wv[word]
+        find_similar_words_by_vector(model, vector, topn)
     print("***************************************************")
 
 
@@ -71,15 +83,14 @@ def test_word_analogies(zipped_model_list):
     get_anwer_to_analogy_question(zipped_model_list, positive=['女王', '男人'], negative=['女人'])
     get_anwer_to_analogy_question(zipped_model_list, positive=['皇后', '國王'], negative=['女王'])
     get_anwer_to_analogy_question(zipped_model_list, positive=['是', '嘅'], negative=['係'])
-    get_anwer_to_analogy_question(zipped_model_list, positive=['乜','他'],negative=['什麼']) # Answer is
+    get_anwer_to_analogy_question(zipped_model_list, positive=['乜','他'],negative=['什麼']) # Answer is 佢
     get_anwer_to_analogy_question(zipped_model_list, positive=['企', '走'], negative=['站'])  # Answer is 行
     get_anwer_to_analogy_question(zipped_model_list, positive=['食', '喝'], negative=['吃'])  # Answer is 飲
     get_anwer_to_analogy_question(zipped_model_list, positive=['嗌', '哭'], negative=['叫'])  # Answer is 喊
     get_anwer_to_analogy_question(zipped_model_list, positive=['叫', '喊'], negative=['嗌'])  # Answer is 哭
     get_anwer_to_analogy_question(zipped_model_list, positive=['總統', '中國'], negative=['美國'])
     get_anwer_to_analogy_question(zipped_model_list, positive=['主席', '美國'], negative=['中國'])
-    get_anwer_to_analogy_question(zipped_model_list, positive=['民主', '專政'], negative=['自由'])
-    get_anwer_to_analogy_question(zipped_model_list, positive=['自由', '獨裁'], negative=['民主'])
+    get_anwer_to_analogy_question(zipped_model_list, positive=['獨裁','自由'], negative=['民主'])
     get_anwer_to_analogy_question(zipped_model_list, positive=['壽司','美國'], negative=['日本'])
     get_anwer_to_analogy_question(zipped_model_list, positive=['點心', '台灣'], negative=['香港'])
     get_anwer_to_analogy_question(zipped_model_list, positive=['壽司', '中國'], negative=['日本'])
@@ -118,11 +129,25 @@ def test_similar_by_word(zipped_model_list):
     similar_words(zipped_model_list,"小王子",3)
     similar_words(zipped_model_list,"靚仔",3)
     similar_words(zipped_model_list, "電腦", 3)
+    similar_words(zipped_model_list, "中國", 5)
+
+
+def test_similar_by_word_addition(zipped_model_list):
+    similar_vectors(zipped_model_list, "中國 人民", 5)
+    similar_vectors(zipped_model_list, "紐約 時報", 5)
+    similar_vectors(zipped_model_list, "中國 城市", 5)
+    similar_vectors(zipped_model_list, "美國 總統", 5)
+    similar_vectors(zipped_model_list, "德國 河流", 5)
+
+
 
 
 def test_similarity(zipped_model_list):
     similarity(zipped_model_list, "快速", "迅速")
     similarity(zipped_model_list, "簡單", "容易")
+    similarity(zipped_model_list, "簡單", "困難")
+    similarity(zipped_model_list, "快活", "開心")
+    similarity(zipped_model_list, "開心", "悲傷")
     similarity(zipped_model_list, "朋友", "夥伴")
     similarity(zipped_model_list, "飛機", "機場")
     similarity(zipped_model_list, "關鍵", "重要")

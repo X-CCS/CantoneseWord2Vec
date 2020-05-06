@@ -38,3 +38,9 @@ def get_accuracy(model,path_to_file):
 def get_evaluation_score(model,path_to_file):
     print(model.wv.evaluate_word_pairs(path_to_file))
     print('-----------------------------------------------------')
+
+
+def find_similar_words_by_vector(model, target, topn=5):
+    for word in model.wv.similar_by_vector(target,topn=topn):
+        print(word[0], word[1])
+    print('-----------------------------------------------------')
