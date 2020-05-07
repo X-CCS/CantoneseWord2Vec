@@ -1,8 +1,8 @@
-# encoding=utf-8
+#### This script is a testing script for Jieba Chinese Segmentation tool
 
 import jieba
 import jieba.analyse
-jieba.enable_paddle()# 启动paddle模式。
+jieba.enable_paddle()
 jieba.load_userdict("./data/cantondict2.txt")
 strs=["我要先同各位小朋友講聲唔好意思","因為我想將呢本書獻畀一個大人","我噉做係有個好真切嘅理由","我喺一本書入面見過幅好得人驚嘅圖畫","然後我好孤獨噉生活落去"]
 for str in strs:

@@ -1,8 +1,11 @@
+#### This script trains fastText Models####
+
 from gensim.models import FastText, word2vec
 from gensim.models import keyedvectors
 import time
 import os
 
+# This function is used to configure hyper-parameters for training
 def train_fasttext(sentences, embedding_size=100, window=5, sg=1, hs=0, min_ct=2,min_n = 1, max_n = 4,
                    ns_exponent=0.75, negative=15, epoch=50, sample_t=1e-5):
     start_time = time.time()
@@ -14,20 +17,20 @@ def train_fasttext(sentences, embedding_size=100, window=5, sg=1, hs=0, min_ct=2
     print("%d seconds used to train this model" %(training_time))
     return ftmodel
 
-
+# This function saves trained fastText model
 def save_fasttext(ftmodel,model_path):
     ftmodel.save(model_path)
 
-
+# This function saves the word vector entities of trained model
 def save_fasttext_wv(ftmodel,vector_path):
     ftmodel.wv.save(vector_path)
 
-
+# This function loads trained fastText model
 def load_fasttext(model_path):
     model = FastText.load(model_path)
     return model
 
-
+# This function loads the word vector entities of trained model
 def load_fasttextVectors(vector_path):
     wv = keyedvectors.FastTextKeyedVectors.load(vector_path)
     return wv
@@ -36,12 +39,10 @@ def load_fasttextVectors(vector_path):
 if __name__=='__main__':
 
     #file_path = "./segmentednew"
-    #file_path = "./segmented_oneline"
-
     #sentences = word2vec.PathLineSentences(file_path)
 
+    # Defined the path to load training data
     file_path = "merged/mergedtext_full_wiki_fictions_new.txt"
-    # file_path = "merged/mergedtext_full_oneline_wiki_fiction.txt"
     sentences = word2vec.LineSentence(file_path)
 
     # Set embedding dimension
@@ -80,68 +81,25 @@ if __name__=='__main__':
     window_size = 7
     # window_size = 9
 
+    # Define the output path for trained models
     path_prefix = "F:/fasttextoutput/80epochs/ns_20/"
     if not os.path.exists(path_prefix):
         os.makedirs(path_prefix)
 
 
-    # hierarchical softmax model
-    # print("Training model_hs_{}...".format(window_size))
-    # model_hs = train_fasttext(sentences, embedding_size=emb_dim, window=window_size, sg=1, hs=1, min_ct=min_count,
-    #                             epoch=num_epoch, sample_t=sample_rate)
-    # model_name = "model_hs_" + str(window_size) + ".model"
-    # save_fasttext(model_hs, path_prefix+model_name)
-    # print("number of words in vocab: %d" % (len(model_hs.wv.vocab)))
-    # print("{} saved.".format(model_name))
+    # Train hierarchical softmax model
+    print("Training model_hs_{}...".format(window_size))
+    model_hs = train_fasttext(sentences, embedding_size=emb_dim, window=window_size, sg=1, hs=1, min_ct=min_count,
+                                epoch=num_epoch, sample_t=sample_rate)
+    model_name = "model_hs_" + str(window_size) + ".model"
+    save_fasttext(model_hs, path_prefix+model_name)
+    print("number of words in vocab: %d" % (len(model_hs.wv.vocab)))
+    print("{} saved.".format(model_name))
 
-    # negative sampling model
+    # Train negative sampling model
     print("Training model_ns_{}...".format(window_size))
     model_ns = train_fasttext(sentences, embedding_size=emb_dim, window=window_size, sg=1, hs=0, min_ct=min_count,
                                 negative=num_ns, epoch=num_epoch, ns_exponent=subsample, sample_t=sample_rate)
     model_name = "model_ns_" + str(window_size) + ".model"
     save_fasttext(model_ns, path_prefix+model_name)
     print("{} saved.".format(model_name))
-
-
-
-
-    # #hierarchical softmax with window range of 5
-    # print("Training model_hs_5...")
-    # start_time = time.time()
-    # model_hs_5 = train_fasttext(sentences, embedding_size=emb_dim, window=5, sg=1, hs=1, min_ct=min_count,
-    #                             epoch=num_epoch, sample_t=sample_rate)
-    # training_time = time.time() - start_time
-    # print("%d seconds used to train this model" %(training_time))
-    # save_fasttext(model_hs_5, path_prefix+"model_hs_5.model")
-    # print("number of words in vocab: %d" % (len(model_hs_5.wv.vocab)))
-    # print("model_hs_5.model saved.")
-
-    # # hierarchical softmax with window range of 7
-    # print("Training skip gram model_hs_7...")
-    # start_time = time.time()
-    # model_hs_7 = train_fasttext(sentences, embedding_size=emb_dim, window=7, sg=1, hs=1, min_ct=min_count,
-    #                             epoch=num_epoch, sample_t=sample_rate)
-    # training_time = time.time() - start_time
-    # print("%d seconds used to train this model" %(training_time))
-    # save_fasttext(model_hs_7, path_prefix+"model_hs_7.model")
-    # print("model_hs_7.model saved.")
-    #
-    # # negative sampling with window range of 5
-    # print("Training model_ns_5...")
-    # start_time = time.time()
-    # model_ns_5 = train_fasttext(sentences, embedding_size=emb_dim, window=5, sg=1, hs=0, min_ct=min_count,
-    #                             negative=num_ns, epoch=num_epoch, ns_exponent=subsample, sample_t=sample_rate)
-    # training_time = time.time() - start_time
-    # print("%d seconds used to train this model" %(training_time))
-    # save_fasttext(model_ns_5, path_prefix+"model_ns_5.model")
-    # print("model_ns_5.model saved.")
-    #
-    # # negative sampling with window range of 7
-    # print("Training model_ns_7...")
-    # start_time = time.time()
-    # model_ns_7 = train_fasttext(sentences, embedding_size=emb_dim, window=7, sg=1, hs=0, min_ct=min_count,
-    #                             negative=num_ns, epoch=num_epoch, ns_exponent=subsample, sample_t=sample_rate)
-    # training_time = time.time() - start_time
-    # print("%d seconds used to train this model" %(training_time))
-    # save_fasttext(model_ns_7, path_prefix+"model_ns_7.model")
-    # print("model_ns_7.model saved.")

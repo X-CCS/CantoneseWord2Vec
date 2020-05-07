@@ -1,51 +1,39 @@
-import pycantonese as pc
+#### This Script generates a Cantonese Common Words Dictionary for word segmentation ####
 
+import pycantonese as pc
 import os
 
-import re
 
-import codecs
+#load HkCancor Corpus
+corpus = pc.hkcancor()
 
-corpus = pc.hkcancor()#load HkCancor Corpus
-
+#Get the frequency of words in the corpus
 freq = corpus.word_frequency()
 
-def save(file_path, init_words_path, tagged_words):
-
+## This function takes in an intial dictionary and generate a new dictionary
+## New dictionary inherits words from the old dictionary
+def save_dict(file_path, init_words_path, tagged_words):
+    #Make the directory for saving the generated dictionary
     directory = os.path.dirname(file_path)
 
     if not os.path.exists(directory):
 
         os.makedirs(directory)
-
-    with codecs.open(init_words_path, 'r', 'utf8') as t:
+    # Open and read the initial dictionary
+    with open(init_words_path, 'r') as t:
 
         lines = t.readlines()
-
-        with codecs.open(file_path, 'w', 'utf8') as f:
+        # Read words from the corpus and write into the new file
+        with open(file_path, 'w', encoding='utf8') as f:
 
             for word in tagged_words:
 
-                word_freq = freq[word[0]] if word[0] in freq else None
-
-                word_tag = word[1].lower()
-
-                word_tag_matched = bool(re.match('^[a-z]+$', word_tag))
-
                 word_line = word[0]
 
-                if word_freq is not None:
-
-                    word_line = word_line + ' ' + str(word_freq)
-
-                if word_tag_matched is True:
-
-                    word_line = word_line + ' ' + str(word_tag)
-
-                f.write(word_line + '\n')
+                f.write(word_line + '\n') # One word on each line
 
             for line in lines:
 
                 f.write(line)
 
-save('data/cantondict2.txt', 'data/init_dict.txt', corpus.tagged_words())
+save_dict('data/dict4pku.txt', 'data/init_dict.txt', corpus.tagged_words())

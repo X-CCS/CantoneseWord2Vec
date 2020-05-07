@@ -1,13 +1,15 @@
+#### The scripts generates a stop word dictionary for Cantonese Corpus ####
 import pycantonese as pc
 
 import os
 
-import re
-
-corpus = pc.hkcancor()#load HkCancor Corpus
+#load HkCancor Corpus
+corpus = pc.hkcancor()
 
 stop = pc.stop_words()
-def save(file_path, init_words_path, tagged_words):
+
+## This function generate the stop word dictionary using the stops provided in HkCancor corpus
+def save_stopwords(file_path, tagged_words):
 
     directory = os.path.dirname(file_path)
 
@@ -24,4 +26,4 @@ def save(file_path, init_words_path, tagged_words):
 
             f.write(word_line + '\n')
 
-save('data/stopwordCT.txt', 'data/init_dict.txt', stop)
+save_stopwords('data/stopwordCT.txt', 'data/init_dict.txt', stop)

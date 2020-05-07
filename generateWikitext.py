@@ -1,21 +1,21 @@
+#### This script generates txt version of wiki corpus based on the raw dump file of WikiPedia ####
 from gensim.corpora import WikiCorpus
 import codecs
-import jieba
+
+
+# Define the path to find the raw Wiki dump file
+path_to_yue_wiki = './text/zh_yuewiki-latest-pages-articles.xml.bz2'
+
 def generate_wiki():
-    jieba.load_userdict("./data/cantondict2.txt")
-    path_to_yue_wiki = './text/zh_yuewiki-latest-pages-articles.xml.bz2'
+
     i = 0
+    # Use the WikiCorpus API to read text contents from the raw dump file
     wiki = WikiCorpus(path_to_yue_wiki,lemmatize=False)
-    file = codecs.open('./text/yue_wiki.txt', 'w', 'utf-8')
-    token_list = []
+    file = codecs.open('./text/yue_wiki2.txt', 'w', 'utf-8')
+    # Write texts into the new file article by article
     for text in wiki.get_texts():
-        for sentence in text:
-            tokens = list(jieba.cut(sentence,HMM=True))
-            for token in tokens:
-                token_list.append(token)
-        str_lines = " ".join(token_list) + "\n"
+        str_lines = " ".join(text) + "\n"
         file.write(str_lines)
-        token_list = []
         i += 1
         if(i % 100 == 0):
             print("Save "+str(i) + " articles")

@@ -1,9 +1,11 @@
-import sys
+#### This script performs text pre-processing on splitted corpus ####
 import jieba
 import os
 import codecs
 import re
 from zhon.hanzi import punctuation
+
+# This function load the raw corpus file which is splitted into sentences
 def read_file(file_path):
     with codecs.open(file_path,"r","utf-8") as file:
         corpus = file.readlines()
@@ -13,6 +15,7 @@ def read_file(file_path):
             newcorpus.append(line.rstrip("\n"))
         return newcorpus
 
+# This function save the processed corpus into text file
 def save_file(file_path,content):
     directory = os.path.dirname(file_path)
     if not os.path.exists(directory):
@@ -22,28 +25,19 @@ def save_file(file_path,content):
             file.write(line + '\n')
         file.close()
 
-
+# This function clean the input sentence to remove punctuations, digits and foreign characters
 def clean(line):
     zh_chars = re.findall('[\n\s*\r\u4e00-\u9fa5]', line)
     line = "".join(zh_chars)
-    #decimal_alpha_cut = re.compile(r"[A-Za-z0-9]|/d+")
     zh_punct_cut = re.compile(r"[%s]+"%punctuation)
     en_punct_cut = re.compile(r"[.!//_,$&%^*()<>+\"'?@#-|:~{}]+|[．─⋯]+")
     space_cut = re.compile(r"\s+")
-    #line = decimal_alpha_cut.sub(r"", line)
     line = zh_punct_cut.sub(r"",line)
     line = en_punct_cut.sub(r"",line)
     line = space_cut.sub(r"",line)
-    #print(line)
     return line
 
-def clean2(line):
-    zh_chars = re.findall('[\n\s*\r\u4e00-\u9fa5]', line)
-    line = "".join(zh_chars)
-    line = line.strip()
-    #print(line)
-    return line
-
+# This function filter out stop words from input sentences
 def filter_stopwords(line,stopword_list):
     line_filtered = []
     for word in line:
@@ -59,8 +53,11 @@ output_path = "segmentednew/"
 #output_path = "merged2/"
 stopword_path = "data/stopwordCT.txt"
 
+
+# This function calls other functions to clean and segment splitted corpus
 def segment():
     jieba.load_userdict("./data/cantondict2.txt")
+    # Read in a list stopwords
     with codecs.open(stopword_path,'r',"utf-8") as stopwords:
         stopword_list = [line.strip() for line in stopwords]
     if not os.path.exists(output_path):
@@ -70,23 +67,30 @@ def segment():
         full_file_path = corpus_path+file_name
         file_name = re.sub(r'.txt',r'',file_name)
         output_file_path = output_path+file_name+'_segmented_full.txt'
+
+        # Load text files with separate sentences
         corpus = read_file(full_file_path)
         new_corpus = []
+
+        # Clean and segment sentences line by line
         for line in corpus:
+            # Clean the sentence
             line = clean(line)
-            #print(line)
             if line == '':
                 continue
+
+            # Segment the sentence
             line = list(jieba.cut(line,HMM=True))
             #line = filter_stopwords(line,stopword_list)
             if len(line) == 0 :
                 continue
+            # Join the segmented words with spaces
             line = ' '.join(line)
             line = line.rstrip('\r\n').strip()
             new_corpus.append(line)
-            #print(line)
         save_file(output_file_path,new_corpus)
 
+# This function merge seperate segmented articles into one text file
 def mergefiles(filename):
     file_list = os.listdir(output_path)
     print(file_list)
@@ -102,7 +106,7 @@ def mergefiles(filename):
                 currentfile.close()
                 mergedfile.write(content)
         mergedfile.close()
-#clean(" 这句话里有英语a和字母1需要被去除，还有中文 标点 符号。。。（））‘’“”【】……,还有英语标点符号(){}[]......\'\"!?/\\\「大作一號」english英语数字1234去除了吗？ ")
-#filter_stopwords('','data/stopwordCT.txt')
-#segment()
-mergefiles('mergedtext_full_wiki_fictions_new.txt')
+
+if __name__ == '__main__':
+    segment()  # Segment the reformated corpus
+    mergefiles('mergedtext_full_wiki_fictions_new.txt') # Merge segmented articles
